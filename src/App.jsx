@@ -2,10 +2,9 @@ import { useState, useEffect } from 'react'
 import './App.css'
 
 const CAT_ENDPOINT_RANDOM_FACT_URL = 'https://catfact.ninja/fact'
-//const CAT_ENDPOINT_IMAGE_URL = `https://cataas.com/cat/says/${firstWord}?size=50&color=white&json=true`
 
 export function App() {
-  const [fact, setFact] = useState('lorem ipsum cat fact')
+  const [fact, setFact] = useState()
   const [imageUrl, setImageUrl] = useState()
 
   /* La primera vez que se renderiza el componente, se hace el fetching de datos */
@@ -15,11 +14,17 @@ export function App() {
       .then(data => {
         const { fact } = data;
         setFact(fact);
-        const firstWord = fact.split(' ')[0];
-        /* Generación de la imagen con el hecho */
-        setImageUrl(`https://cataas.com/cat/says/${firstWord}?fontColor=white&fit=contain`)
     })
   }, [])
+
+  /* Cada vez que se actualiza "fact", se busca la imagen */
+  useEffect(() => {
+    if (fact) {
+      const firstWord = fact.split(' ')[0];
+      /* Generación de la imagen con la primera palabra del hecho */
+      setImageUrl(`https://cataas.com/cat/says/${firstWord}?fontColor=white&fit=contain`)
+    }
+  }, [fact])
 
   return (
     <main>
@@ -27,7 +32,7 @@ export function App() {
         Cat facts
       </h1>
      {fact && <p>{fact}</p>}
-     {imageUrl && <img src={imageUrl}/>}
+     {imageUrl && <img src={imageUrl} alt={'Image of ' + fact}/>}
     </main>
   )
 }
