@@ -1,27 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useFactToImage } from './hooks/useFactToImage'
 import './App.css'
-import { fetchRandomFact, getImageUrl } from './services/functions'
+import { useCatFact } from './hooks/useCatFact'
 
 export function App() {
-  const [fact, setFact] = useState()
-  const [imageUrl, setImageUrl] = useState()
+  const {fact, getRandomFact} = useCatFact()
+  const {imageUrl} = useFactToImage({fact})
 
   /* Función que maneja el click del botón */
   const handleClick = () => {
-    fetchRandomFact().then(newFact => setFact(newFact))
+    getRandomFact();
   }
-
-  /* La primera vez que se renderiza el componente, se hace el fetching de datos */
-  useEffect(() => {
-    fetchRandomFact().then(newFact => setFact(newFact))
-  }, [])
-
-  /* Cada vez que se actualiza "fact", se busca la imagen */
-  useEffect(() => {
-    if (fact) {
-      setImageUrl(getImageUrl(fact))
-    }
-  }, [fact])
 
   return (
     <main>
